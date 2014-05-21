@@ -1,4 +1,4 @@
-#umeng-message-sdk-php
+#qiniu-sdk-php
 
 七牛云存储 Qiniu Resource (Cloud) Storage SDK（PHP composer版）
 
