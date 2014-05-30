@@ -121,7 +121,7 @@ class RS
             if (!isset($this->conf['customDomain']) || empty($this->conf['customDomain'])) {
                 $httpUri = 'http://' . str_replace('//', '/', $this->bucket . $this->conf['httpUriSuffix'] . '/' . $remoteFileName);
             } else {
-                $httpUri = 'http://' . $this->conf['customDomain'] . '/' . $body['key'];
+                $httpUri = 'http://' . $this->conf['customDomain'] . '/' . $remoteFileName;
             }
             $r = array(
                 'httpUri'  => $httpUri,
