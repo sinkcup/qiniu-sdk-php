@@ -84,6 +84,20 @@ class RS
         $uri = 'http://' . str_replace('//', '/', $this->conf['host']['up'] . '/');
         //scope中指定文件，就可以覆盖。如果只写bucket，则重复上传会出现错误：614 文件已存在。
         $policy =  array('scope' => $this->bucket . ':' . $remoteFileName, 'deadline' => time() + 3600);
+        $pics = array(
+            'image/jpeg',
+            'image/webp',
+            'image/png',
+        );
+        //如果是图片，则需要返回分辨率
+        if (isset($headers['Content-Type']) && in_array($headers['Content-Type'], $pics)) {
+            $policy['returnBody'] = json_encode(
+                array(
+                    'width' => '$(imageInfo.width)',
+                    'height' => '$(imageInfo.height)',
+                )
+            );
+        }
         $data = $this->encode(json_encode($policy));
         $token = $this->sign($data) . ':' . $data;
 
@@ -104,15 +118,22 @@ class RS
         $code = $http->getResponseCode();
         if ($code == 200) {
             //自定义域名一定是http，因为证书不能跨域名
-            if (empty($this->conf['customDomain'])) {
-                $httpUri = 'http://' . str_replace('//', '/', $this->bucket . $this->conf['httpUriSuffix'] . '/' . $body['key']);
+            if (!isset($this->conf['customDomain']) || empty($this->conf['customDomain'])) {
+                $httpUri = 'http://' . str_replace('//', '/', $this->bucket . $this->conf['httpUriSuffix'] . '/' . $remoteFileName);
             } else {
                 $httpUri = 'http://' . $this->conf['customDomain'] . '/' . $body['key'];
             }
-            return array(
+            $r = array(
                 'httpUri'  => $httpUri,
-                'httpsUri' => 'https://' . str_replace('//', '/', $this->conf['httpsUriPrefix'] . $this->bucket . $this->conf['httpsUriSuffix'] . '/' . $body['key']),
+                'httpsUri' => 'https://' . str_replace('//', '/', $this->conf['httpsUriPrefix'] . $this->bucket . $this->conf['httpsUriSuffix'] . '/' . $remoteFileName),
             );
+            if (isset($body['width'])) {
+                $r['width'] = $body['width'];
+            }
+            if (isset($body['height'])) {
+                $r['height'] = $body['height'];
+            }
+            return $r;
         }
         throw new Exception($body['error'], $code);
     }

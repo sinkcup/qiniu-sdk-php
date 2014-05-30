@@ -1,8 +1,8 @@
 <?php
 function autoload($className)
 {
-    if(strpos($className, '\\') !== false) {
-        if(strpos($className, 'Qiniu') === 0) {
+    if (strpos($className, '\\') !== false) {
+        if (strpos($className, 'Qiniu') === 0) {
             require_once(__DIR__ . '/../src/' . str_replace('\\', '/', $className) . '.php');
         } else {
             //require_once(str_replace('\\', '/', $className) . '.php');
@@ -11,4 +11,3 @@ function autoload($className)
     }
 }
 spl_autoload_register('autoload');
-?>

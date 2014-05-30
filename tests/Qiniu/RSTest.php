@@ -3,8 +3,8 @@ require_once __DIR__ . '/../autoload.php';
 class RSTest extends PHPUnit_Framework_TestCase
 {
     private $conf = array(
-        'accessKey' => 'asdf',
-        'secretKey' => 'qwer',
+        'accessKey' => 'change me'
+        'secretKey' => 'change me'
         'bucket' => 'com-163-sinkcup-test',
     );
 
@@ -41,8 +41,6 @@ class RSTest extends PHPUnit_Framework_TestCase
         } catch (\Exception $e) {
             echo $e->getCode();
             echo $e->getMessage();
-            $this->assertEquals(true, false);
         }
     }
 }
-?>
